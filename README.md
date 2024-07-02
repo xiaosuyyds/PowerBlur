@@ -60,6 +60,6 @@ blurred_image.save("output.jpg")
 ## ✨效果展示
 
 ### 原始图片
-![image](testpng)
+![image](test.png)
 ### 处理后图片
 ![image](test_output.png)
