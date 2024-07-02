@@ -1,0 +1,19 @@
+[project]
+name = "PowerBlur"
+version = "0.0.2"
+authors = [
+  { name="徐付豫", email="xufuyu-mg@outlook.com" },
+  { name="校溯", email="xiaosu-1009@qq.com" },
+]
+description = "PowerBlur is an image blur processing tool based on Pillow, which can achieve ground glass effects similar to systems such as Win/Mac."
+readme = "README.md"
+requires-python = ">=3.0"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/xiaosuyyds/PowerBlur/"
+
