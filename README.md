@@ -1,4 +1,4 @@
-# PowerBlur
+<h1 align="center">PowerBlur</h1>
 
 ## 📖介绍
 
