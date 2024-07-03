@@ -2,7 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 import PowerBlur
 
 # 加载图像
-image = Image.open("test.png")
+image = Image.open("test.jpg")
 font = ImageFont.truetype("PINGFANG BOLD.TTF", 30)
 
 # 计算每一种预设展示位置以及坐标
@@ -38,4 +38,4 @@ draw.text((int(size4[0]), int(size4[1])), "Acrylic", font=font, fill=(0, 0, 0))
 draw.text((int(size5[0]), int(size5[1])), "Mica", font=font, fill=(0, 0, 0))
 
 # 保存图像
-image.save("test_output.png")
+image.save("test_output.jpg")
