@@ -44,7 +44,8 @@ blurred_image.save("output.jpg")
 | radius     | ❌（默认值25）          | int        | 圆角尺寸，0即无圆角                    |
 | mask_fill  | ❌（默认值255,255,255） | tuple/list | 蒙版颜色(R,G,B)                   |
 | mask_alpha | ❌（默认值100）         | int        | 蒙版透明度（0~255），0即完全不透明，100即完全透明 |
-| noise_num  | ❌（默认值0.03）        | float      | 高斯噪声量(0~1)，0即完全无噪声，1即全部是噪声    |
+| noise_mean | ❌（默认值0.03）        | float      | 高斯噪声均值(0~255)                 |
+| noise_std  | ❌（默认值10）          | float      | 高斯噪声标准差，为0时无噪声                |
 | sigma      | ❌（默认值5）           | float      | 高斯模糊参数，0即无模糊                  |
 | exposure   | ❌（默认值1）           | float      | 曝光度（0~10），0即无                 |
 | saturation | ❌（默认值1）           | float      | 饱和度，0即无                       |
