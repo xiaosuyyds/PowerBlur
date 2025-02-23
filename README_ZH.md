@@ -68,6 +68,6 @@ blurred_image.save("output.jpg")
 ## ✨效果展示
 
 ### 原始图片
-![image](https://cdn.jsdelivr.net/gh/xiaosuyyds/PowerBlur@master/test.jpg)
+![image](https://cdn.jsdelivr.net/gh/xiaosuyyds/PowerBlur@master/example.jpg)
 ### 处理后图片
-![image](https://cdn.jsdelivr.net/gh/xiaosuyyds/PowerBlur@master/test_output.jpg)
+![image](https://cdn.jsdelivr.net/gh/xiaosuyyds/PowerBlur@master/example_output.jpg)

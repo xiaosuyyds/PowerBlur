@@ -65,7 +65,7 @@ blurred_image.save("output.jpg")
 ## ✨ Effect Showcase
 
 ### Original Image
-![image](https://cdn.jsdelivr.net/gh/xiaosuyyds/PowerBlur@master/test.jpg)
+![image](https://cdn.jsdelivr.net/gh/xiaosuyyds/PowerBlur@master/example.jpg)
 
 ### Processed Image
-![image](https://cdn.jsdelivr.net/gh/xiaosuyyds/PowerBlur@master/test_output.jpg)
+![image](https://cdn.jsdelivr.net/gh/xiaosuyyds/PowerBlur@master/example_output.jpg)
