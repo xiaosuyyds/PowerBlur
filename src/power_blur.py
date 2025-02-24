@@ -20,20 +20,39 @@ class RoundedRectangle:
         self.size = size
         self.radius = radius
         self.magnification = magnification
-        self.mask = Image.new("RGBA", ((size[2] - size[0])*self.magnification,
-                                       (size[3] - size[1])*self.magnification), (255, 255, 255, 0))
 
     def draw(self):
-        draw = ImageDraw.Draw(self.mask)
-        draw.rounded_rectangle(
-            (0, 0, self.mask.size[0], self.mask.size[1]),
-            radius=self.radius*self.magnification,
-            fill=self.color
-        )
-        self.mask = self.mask.resize(
-            (self.mask.size[0] // self.magnification, self.mask.size[1] // self.magnification),
+        # 创建一个圆形的单色图片
+        circle = Image.new('L', (self.radius * 2 * self.magnification, self.radius * 2 * self.magnification), 0)
+
+        # 绘制一个圆
+        draw = ImageDraw.Draw(circle)
+        draw.ellipse((0, 0, self.radius * 2 * self.magnification, self.radius * 2 * self.magnification), fill=255)
+
+        # 缩放回正常大小
+        circle = circle.resize(
+            (self.radius * 2, self.radius * 2),
             Image.Resampling.LANCZOS)
-        self.image.paste(self.mask, (self.size[0], self.size[1]), self.mask)
+
+        # 创建一个矩形蒙版
+        mask = Image.new("RGBA", ((self.size[2] - self.size[0]), (self.size[3] - self.size[1])),
+                         (self.color[0], self.color[1], self.color[2], 255))
+        w, h = mask.size
+
+        # 创建一个蒙版的alpha层，并将四个角替换为圆形
+        mask_alpha = Image.new('L', mask.size, 255)
+        mask_alpha.paste(circle.crop((0, 0, self.radius, self.radius)), (0, 0))  # 左上角
+        mask_alpha.paste(circle.crop((self.radius, 0, self.radius * 2, self.radius)),
+                         (w - self.radius, 0))  # 右上角
+        mask_alpha.paste(circle.crop((self.radius, self.radius, self.radius * 2, self.radius * 2)),
+                         (w - self.radius, h - self.radius))  # 右下角
+        mask_alpha.paste(circle.crop((0, self.radius, self.radius, self.radius * 2)),
+                         (0, h - self.radius))  # 左下角
+
+        # 将圆角矩形蒙版粘贴到矩形蒙版上
+        mask.putalpha(mask_alpha)
+
+        self.image.paste(mask, (self.size[0], self.size[1]), mask)
         return self.image
 
 
