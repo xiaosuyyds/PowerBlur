@@ -1,4 +1,4 @@
-import src as PowerBlur
+import PowerBlur
 from PIL import Image, ImageDraw, ImageFont
 import time
 
