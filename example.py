@@ -1,5 +1,6 @@
+import src as PowerBlur
 from PIL import Image, ImageDraw, ImageFont
-import PowerBlur
+import time
 
 # 加载图像
 image = Image.open("example.jpg")
@@ -22,12 +23,17 @@ print(size3)
 print(size4)
 print(size5)
 
+start_time = time.time()
+
 # 绘制
-image = PowerBlur.PowerBlur(image, size1, sigma=25, radius=35).draw()
-image = PowerBlur.Blur(image, size2, sigma=25, radius=35).draw()
-image = PowerBlur.Aero(image, size3, sigma=25, radius=35).draw()
-image = PowerBlur.Acrylic(image, size4, sigma=50, mask_fill=(0, 0, 0), radius=35).draw()
-image = PowerBlur.Mica(image, size5, sigma=100, mask_fill=(32, 32, 32), radius=35).draw()
+image = PowerBlur.power_blur(image, size1, sigma=25, radius=35, outline_fill=(32, 32, 32))
+image = PowerBlur.blur(image, size2, sigma=25, radius=35)
+image = PowerBlur.aero(image, size3, sigma=25, radius=35)
+image = PowerBlur.acrylic(image, size4, sigma=50, mask_fill=(0, 0, 0), radius=35,
+                          outline_fill=(32, 32, 32), outline_width=3, outline_alpha=255)
+image = PowerBlur.mica(image, size5, sigma=100, mask_fill=(0, 0, 0), radius=35)
+
+print(f"Time taken: {round((time.time() - start_time) * 1000, 2)}ms")
 
 # 添加文字
 draw = ImageDraw.Draw(image)

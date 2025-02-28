@@ -27,14 +27,11 @@ image = Image.open("image.jpg")
 # 获取图片尺寸
 width, height = image.size
 
-# 创建模糊处理对象
-blur = PowerBlur.PowerBlur(image, (int(width*0.1), int(height*0.1), int(width*0.9), int(height*0.9)))
-
-# 模糊处理
-blurred_image = blur.draw()
+# 应用模糊处理
+PowerBlur.power_blur(image, (int(width*0.1), int(height*0.1), int(width*0.9), int(height*0.9)))
 
 # 保存模糊处理后的图像
-blurred_image.save("output.jpg")
+image.save("output.jpg")
 ```
 
 ### 参数说明
@@ -54,13 +51,13 @@ blurred_image.save("output.jpg")
 
 ### 担心这么多参数设置起来麻烦，我们为你准备了一些预设
 
-| 预设名称      | 中文名称 | 配方                         |
-|-----------|------|----------------------------|
-| PowerBlur |      | 默认的，没啥好说的吧……反正作者我觉得挺好看的    |
-| Blur      |      | 基础的模糊效果，没什么特别的             |
-| Aero      |      | Windows 7 的玻璃效果，具有曝光和饱和度效果 |
-| Acrylic   | 亚克力  | 模糊, 叠加混合, 饱和度, 颜色蒙版, 噪点纹理  |
-| Mica      | 云母   | 模糊, 饱和度, 颜色蒙版              |
+| 预设名称       | 中文名称 | 配方                         |
+|------------|------|----------------------------|
+| power_blur |      | 默认的，没啥好说的吧……反正作者我觉得挺好看的    |
+| blur       |      | 基础的模糊效果，没什么特别的             |
+| aero       |      | Windows 7 的玻璃效果，具有曝光和饱和度效果 |
+| acrylic    | 亚克力  | 模糊, 叠加混合, 饱和度, 颜色蒙版, 噪点纹理  |
+| mica       | 云母   | 模糊, 饱和度, 颜色蒙版              |
 
 
 

@@ -27,14 +27,11 @@ image = Image.open("image.jpg")
 # Get image size
 width, height = image.size
 
-# Create a blur processing object
-blur = PowerBlur.PowerBlur(image, (int(width*0.1), int(height*0.1), int(width*0.9), int(height*0.9)))
-
-# Apply the blur effect
-blurred_image = blur.draw()
+# Apply the power blur effect
+PowerBlur.power_blur(image, (int(width*0.1), int(height*0.1), int(width*0.9), int(height*0.9)))
 
 # Save the blurred image
-blurred_image.save("output.jpg")
+image.save("output.jpg")
 ```
 
 ### Parameter Explanation
@@ -56,11 +53,11 @@ blurred_image.save("output.jpg")
 
 | Preset Name | Chinese Name | Formula                                                                  |
 |-------------|--------------|--------------------------------------------------------------------------|
-| PowerBlur   |              | The default one; nothing much to say, but the author finds it quite nice |
-| Blur        |              | Basic blur effect, nothing special                                       |
-| Aero        |              | Windows 7 glass effect, with exposure and saturation effects             |
-| Acrylic     | 亚克力          | Blur, overlay blend, saturation, color mask, noise texture               |
-| Mica        | 云母           | Blur, saturation, color mask                                             |
+| power_blur  |              | The default one; nothing much to say, but the author finds it quite nice |
+| blur        |              | Basic blur effect, nothing special                                       |
+| aero        |              | Windows 7 glass effect, with exposure and saturation effects             |
+| acrylic     | 亚克力          | Blur, overlay blend, saturation, color mask, noise texture               |
+| mica        | 云母           | Blur, saturation, color mask                                             |
 
 ## ✨ Effect Showcase
 
