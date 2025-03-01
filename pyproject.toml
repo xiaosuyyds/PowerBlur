@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "PowerBlur"
-version = "0.1.0"
+version = "0.1.1"
 authors = [
   { name="校溯", email="xiaosu-1009@qq.com" },
   { name="徐付豫", email="xufuyu-mg@outlook.com" },
