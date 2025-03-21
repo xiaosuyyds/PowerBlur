@@ -1,3 +1,7 @@
+# Licensed under the Apache License: http://www.apache.org/licenses/LICENSE-2.0
+# For details: https://github.com/xiaosuyyds/PowerBlur/blob/master/NOTICE
+
+
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageEnhance
 
@@ -7,59 +11,100 @@ def rounded_rectangle(
         size: list[int, int, int, int] | tuple[int, int, int, int],
         radius: int = 100,
         color: list[int, int, int] | tuple[int, int, int] = (255, 255, 255),
+        color_alpha: int = 255,
         magnification: int = 4,
-        copy: bool = False
+        copy: bool = False,
+        outline_color: list[int, int, int] | tuple[int, int, int] | None = None,
+        outline_alpha: int = 255,
+        outline_width: int = 0
 ):
+    # 如果copy为True，则复制原始图像，避免修改原始图像
     if copy:
         image = image.copy()
 
-    # 创建一个圆形的单色图片
-    circle = Image.new('L', (radius * 2 * magnification, radius * 2 * magnification), 0)
+    # 创建一个临时的RGBA图像，用于绘制圆角，尺寸被放大以提高抗锯齿效果
+    circle = Image.new('RGBA', (radius * 2 * magnification, radius * 2 * magnification),
+                       (255, 255, 255, 0))
 
-    # 绘制一个圆
+    # 获取circle图像的绘图对象
     draw = ImageDraw.Draw(circle)
-    draw.ellipse((0, 0, radius * 2 * magnification, radius * 2 * magnification), fill=255)
+    # 在circle图像上绘制一个圆形，用于生成圆角
+    draw.ellipse(
+        (0, 0, radius * 2 * magnification, radius * 2 * magnification),
+        fill=(color[0], color[1], color[2], color_alpha),
+        outline=(outline_color[0], outline_color[1], outline_color[2], outline_alpha) if outline_color else None,
+        # 仅当 outline_color 不为 None 时才绘制轮廓
+        width=outline_width * magnification
+    )
 
-    # 缩放回正常大小
+    # 将临时圆形图像缩放回正常大小，以应用抗锯齿效果
     circle = circle.resize(
         (radius * 2, radius * 2),
         Image.Resampling.LANCZOS)
 
-    # 创建一个矩形蒙版
+    # 创建一个矩形蒙版，其尺寸与要绘制的矩形相同，颜色和透明度与圆角矩形相同
     mask = Image.new("RGBA", ((size[2] - size[0]), (size[3] - size[1])),
-                     (color[0], color[1], color[2], 255))
-    w, h = mask.size
+                     (color[0], color[1], color[2], color_alpha))
+    # 如果需要绘制轮廓且指定了轮廓颜色，则在矩形蒙版上绘制矩形轮廓
+    if outline_width > 0 and outline_color:  # 确保 outline_color 不为 None 才绘制轮廓
+        draw = ImageDraw.Draw(mask)
+        draw.rectangle(
+            (0, 0, mask.size[0] - 1, mask.size[1] - 1),
+            fill=None,
+            outline=(outline_color[0], outline_color[1], outline_color[2], outline_alpha),
+            width=outline_width
+        )
+    w, h = mask.size  # 获取蒙版的宽度和高度
 
-    # 创建一个蒙版的alpha层，并将四个角替换为圆形
-    mask_alpha = Image.new('L', mask.size, 255)
-    mask_alpha.paste(circle.crop((0, 0, radius, radius)), (0, 0))  # 左上角
-    mask_alpha.paste(circle.crop((radius, 0, radius * 2, radius)),
-                     (w - radius, 0))  # 右上角
-    mask_alpha.paste(circle.crop((radius, radius, radius * 2, radius * 2)),
-                     (w - radius, h - radius))  # 右下角
-    mask_alpha.paste(circle.crop((0, radius, radius, radius * 2)),
-                     (0, h - radius))  # 左下角
+    # 将圆形图像的不同部分（作为圆角）粘贴到矩形蒙版的四个角上
+    # 左上角
+    mask.paste(
+        circle.crop(
+            (
+                0,
+                0,
+                radius,
+                radius
+            )
+        ), (0, 0)
+    )
+    # 右上角
+    mask.paste(
+        circle.crop(
+            (
+                radius,
+                0,
+                radius * 2,
+                radius
+            )
+        ),
+        (w - radius, 0))
+    # 右下角
+    mask.paste(
+        circle.crop(
+            (
+                radius,
+                radius,
+                radius * 2,
+                radius * 2
+            )
+        ),
+        (w - radius, h - radius)
+    )
+    # 左下角
+    mask.paste(
+        circle.crop(
+            (
+                0,
+                radius,
+                radius,
+                radius * 2
+            )
+        ), (0, h - radius)
+    )
 
-    # 将圆角矩形蒙版粘贴到矩形蒙版上
-    mask.putalpha(mask_alpha)
-
+    # 将创建的圆角矩形蒙版粘贴到原始图像上，使用蒙版自身作为alpha蒙版
     image.paste(mask, (size[0], size[1]), mask)
-
-    # 以前效率很低的实现（速度相差约5倍）
-    # mask = Image.new("RGBA", ((size[2] - size[0]) * magnification,
-    #                           (size[3] - size[1]) * magnification), (255, 255, 255, 0))
-    #
-    # draw = ImageDraw.Draw(mask)
-    # draw.rounded_rectangle(
-    #     (0, 0, mask.size[0], mask.size[1]),
-    #     radius=radius * magnification,
-    #     fill=color
-    # )
-    # mask = mask.resize(
-    #     (mask.size[0] // magnification, mask.size[1] // magnification),
-    #
-    #     Image.Resampling.LANCZOS)
-    # image.paste(mask, (size[0], size[1]), mask)
     return image
 
 
@@ -165,27 +210,16 @@ def power_blur(
 
     # 计算描边
     if outline_alpha > 0 and outline_width > 0:
-        outline_image = Image.new(
-            "RGBA", (width_mask + outline_width * 2, height_mask + outline_width * 2),
-            (outline_fill[0], outline_fill[1], outline_fill[2], outline_alpha)
+        rounded_rectangle(
+            crop_image,
+            (0, 0, width_mask, height_mask),
+            color_alpha=0,
+            radius=radius,
+            outline_alpha=outline_alpha,
+            outline_width=outline_width,
+            outline_color=outline_fill
         )
-        outline_image.alpha_composite(crop_image, (outline_width, outline_width))
-        # 对描边进行圆角
-        outline_image_mask = Image.new(
-            "RGBA", (width_mask + outline_width * 2, height_mask + outline_width * 2),
-            (255, 255, 255, 0)
-        )
-        # 创建圆角遮罩（并计算 radius 的修正值，就是这里有点问题，因为浮点数和 int 的转换会有误差，不过也可能是我计算方法的问题，反正看着就有点难受，之后肯定是要换一种描边计算方法的）
-        rounded_rectangle(outline_image_mask, (0, 0, width_mask + outline_width * 2, height_mask + outline_width * 2),
-                          round(radius * ((width_mask + height_mask + outline_width * 4) / (width_mask + height_mask))))
-        new_outline = Image.new(
-            "RGBA", (width_mask + outline_width * 2, height_mask + outline_width * 2),
-            (255, 255, 255, 0)
-        )
-        new_outline.paste(outline_image, (0, 0), outline_image_mask)
-        base_image.paste(new_outline, (size[0] - outline_width, size[1] - outline_width), new_outline)
-    else:
-        base_image.paste(crop_image, (size[0], size[1]), crop_image)
+    base_image.paste(crop_image, (size[0], size[1]), crop_image)
 
     # 返回处理后的图像
     return base_image

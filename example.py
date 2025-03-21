@@ -1,3 +1,4 @@
+# import src.PowerBlur as PowerBlur
 import PowerBlur
 from PIL import Image, ImageDraw, ImageFont
 import time
@@ -26,7 +27,7 @@ print(size5)
 start_time = time.time()
 
 # 绘制
-image = PowerBlur.power_blur(image, size1, sigma=25, radius=35, outline_fill=(32, 32, 32))
+image = PowerBlur.power_blur(image, size1, sigma=25, radius=35, outline_fill=(32, 32, 32), outline_alpha=192)
 image = PowerBlur.blur(image, size2, sigma=25, radius=35)
 image = PowerBlur.aero(image, size3, sigma=25, radius=35)
 image = PowerBlur.acrylic(image, size4, sigma=50, mask_fill=(0, 0, 0), radius=35,
